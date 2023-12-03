@@ -166,6 +166,18 @@ export default {
     };
   },
   methods: {
+    closeAddModal() {
+      this.isShowAddModal = false;
+    },
+    showAddModal() {
+      this.isShowAddModal = true;
+    },
+    closeEditModal() {
+      this.isShowEditModal = false;
+    },
+    showEditModal() {
+      this.isShowEditModal = true;
+    },
     menuToggle() {
       this.menuClose = !this.menuClose;
       this.menuOpen = !this.menuOpen;

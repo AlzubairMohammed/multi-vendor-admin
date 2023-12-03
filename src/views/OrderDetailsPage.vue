@@ -77,7 +77,7 @@
               <td class="px-6 py-4">{{ app?.product?.name }}</td>
               <td class="px-6 py-4 flex justify-center">
                 <img
-                  width="60"
+                  width="100"
                   height="60"
                   :src="`http://localhost:5000/${
                     app?.product?.image?.split('public/')[1]
@@ -146,9 +146,23 @@ export default {
       page: 1,
       tot: 1,
       search_term: "",
+      isShowAddModal: false,
+      isShowEditModal: false,
     };
   },
   methods: {
+    closeAddModal() {
+      this.isShowAddModal = false;
+    },
+    showAddModal() {
+      this.isShowAddModal = true;
+    },
+    closeEditModal() {
+      this.isShowEditModal = false;
+    },
+    showEditModal() {
+      this.isShowEditModal = true;
+    },
     async add() {
       const form_data = new FormData(this.$refs.add_form);
       const response = await request.post("orders", form_data);
@@ -165,9 +179,10 @@ export default {
     },
     setModalData(app) {
       this.data = Object.assign({}, app);
+      this.isShowEditModal = true;
     },
     async delete_item(app) {
-      const response = await request.delete(`orders/${app.id}`);
+      const response = await request.delete(`orders`, app.id);
       this.get();
       console.log(response);
     },
