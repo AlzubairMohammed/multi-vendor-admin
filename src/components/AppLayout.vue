@@ -27,19 +27,18 @@
     class="fixed top-0 right-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
     aria-label="Sidebar"
   >
-    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-      <span
-        class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"
-        >الجزيرة</span
-      >
+    <div class="h-full px-3 py-4 overflow-y-auto app-bg">
+      <div class="mb-3 pb-2">
+        <img src="/images/logo.png" alt="logo" width="100" height="100" />
+      </div>
       <ul class="space-y-2 font-medium">
         <!-- <li>
           <router-link
-            to="/"
-            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            to="/categories_page"
+            class="flex items-center p-2 text-white dark:text-white hover:text-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group"
           >
             <svg
-              class="w-5 h-5 ml-2 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+              class="flex-shrink-0 w-5 h-5 text-gray-100 dark:text-white hover:text-gray-900 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -58,10 +57,10 @@
         <li>
           <router-link
             to="/categories_page"
-            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            class="flex items-center p-2 text-white dark:text-white hover:text-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group"
           >
             <svg
-              class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
+              class="flex-shrink-0 w-5 h-5 text-gray-100 dark:text-white hover:text-gray-900 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -77,10 +76,10 @@
         <li>
           <router-link
             to="/products_page"
-            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            class="flex items-center p-2 text-white dark:text-white hover:text-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group"
           >
             <svg
-              class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
+              class="flex-shrink-0 w-5 h-5 text-gray-100 dark:text-white hover:text-gray-900 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -96,10 +95,10 @@
         <li>
           <router-link
             to="/users_page"
-            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            class="flex items-center p-2 text-white dark:text-white hover:text-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group"
           >
             <svg
-              class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
+              class="flex-shrink-0 w-5 h-5 text-gray-100 dark:text-white hover:text-gray-900 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -115,10 +114,10 @@
         <li>
           <router-link
             to="/news_page"
-            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            class="flex items-center p-2 text-white dark:text-white hover:text-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group"
           >
             <svg
-              class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
+              class="flex-shrink-0 w-5 h-5 text-gray-100 dark:text-white hover:text-gray-900 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -134,10 +133,10 @@
         <li>
           <router-link
             to="/roles_page"
-            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            class="flex items-center p-2 text-white dark:text-white hover:text-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group"
           >
             <svg
-              class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
+              class="flex-shrink-0 w-5 h-5 text-gray-100 dark:text-white hover:text-gray-900 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -159,10 +158,10 @@
         <li>
           <router-link
             to="/orders_page"
-            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            class="flex items-center p-2 text-white dark:text-white hover:text-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group"
           >
             <svg
-              class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
+              class="flex-shrink-0 w-5 h-5 text-gray-100 dark:text-white hover:text-gray-900 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -178,17 +177,18 @@
             </svg>
             <span class="flex-1 ms-3 whitespace-nowrap">الطلبات </span>
             <span
-              class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300"
+              class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-100 bg-blue-800 rounded-full dark:bg-blue-900 dark:text-blue-300"
               >3</span
             >
           </router-link>
         </li>
+
         <li @click="logout()">
           <a
-            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            class="flex items-center p-2 text-white dark:text-white rounded-lg dark:hover:bg-gray-700 group cursor-pointer"
           >
             <svg
-              class="flex-shrink-0 w-5 text-red-600 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
+              class="flex-shrink-0 w-5 text-red-600 hover:text-red-700 h-5 transition duration-75 dark:text-gray-400 dark:group-hover:text-white ml-2"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -204,7 +204,8 @@
                 d="M8.961 16a.93.93 0 0 0 .189-.019l3.4-.679a.961.961 0 0 0 .49-.263l6.118-6.117a2.884 2.884 0 0 0-4.079-4.078l-6.117 6.117a.96.96 0 0 0-.263.491l-.679 3.4A.961.961 0 0 0 8.961 16Zm7.477-9.8a.958.958 0 0 1 .68-.281.961.961 0 0 1 .682 1.644l-.315.315-1.36-1.36.313-.318Zm-5.911 5.911 4.236-4.236 1.359 1.359-4.236 4.237-1.7.339.341-1.699Z"
               />
             </svg>
-            <span class="flex-1 ms-3 whitespace-nowrap text-red-600"
+            <span
+              class="flex-1 ms-3 whitespace-nowrap text-red-600 hover:text-red-700"
               >تسجيل الخروج</span
             >
           </a>
@@ -222,67 +223,79 @@
   </div> -->
 </template>
 <script>
-// import AppHeader from "./components/AppHeader.vue";
-// import LoginPage from "./views/LoginPage.vue";
-import moment from "moment";
+  // import AppHeader from "./components/AppHeader.vue";
+  // import LoginPage from "./views/LoginPage.vue";
+  import moment from "moment";
 
-export default {
-  data() {
-    return {
-      user_session: localStorage.getItem("GDSC_token"),
-    };
-  },
-  components: {
-    // AppHeader,
-    // LoginPage,
-  },
-  methods: {
-    closeAddModal() {
-      this.isShowAddModal = false;
+  export default {
+    data() {
+      return {
+        user_session: localStorage.getItem("GDSC_token"),
+      };
     },
-    showAddModal() {
-      this.isShowAddModal = true;
+    components: {
+      // AppHeader,
+      // LoginPage,
     },
-    closeEditModal() {
-      this.isShowEditModal = false;
+    methods: {
+      closeAddModal() {
+        this.isShowAddModal = false;
+      },
+      showAddModal() {
+        this.isShowAddModal = true;
+      },
+      closeEditModal() {
+        this.isShowEditModal = false;
+      },
+      showEditModal() {
+        this.isShowEditModal = true;
+      },
+      dateTime(value) {
+        return moment(value).format("YYYY-MM-DD");
+      },
+      logout() {
+        localStorage.removeItem("hala_token");
+        this.$router.replace("/login");
+      },
+      // async checkCookie() {
+      //   if (localStorage.getItem("GDSC_token") === null) {
+      //     this.responseAlert(" الرجاء تسجيل الدخول ", " عفوا ", "warning");
+      //     this.$router.push("/LoginPage");
+      //   }
+      // },
+      // all response alert
+      responseAlert(text, title, icon) {
+        this.$swal.fire({
+          title: `${title}`,
+          text: ` ${text} `,
+          icon: `${icon}`,
+          toast: true,
+          position: "top-start",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      },
     },
-    showEditModal() {
-      this.isShowEditModal = true;
+    provide() {
+      return {
+        checkCookie: this.checkCookie,
+        responseAlert: this.responseAlert,
+        dateTime: this.dateTime,
+      };
     },
-    dateTime(value) {
-      return moment(value).format("YYYY-MM-DD");
-    },
-    logout() {},
-    // async checkCookie() {
-    //   if (localStorage.getItem("GDSC_token") === null) {
-    //     this.responseAlert(" الرجاء تسجيل الدخول ", " عفوا ", "warning");
-    //     this.$router.push("/LoginPage");
-    //   }
+    // async created() {
+    //   await this.checkCookie();
     // },
-    // all response alert
-    responseAlert(text, title, icon) {
-      this.$swal.fire({
-        title: `${title}`,
-        text: ` ${text} `,
-        icon: `${icon}`,
-        toast: true,
-        position: "top-start",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-    },
-  },
-  provide() {
-    return {
-      checkCookie: this.checkCookie,
-      responseAlert: this.responseAlert,
-      dateTime: this.dateTime,
-    };
-  },
-  // async created() {
-  //   await this.checkCookie();
-  // },
-};
+  };
 </script>
 
-<style></style>
+<style>
+  .app-bg {
+    background: linear-gradient(
+      40deg,
+      rgb(7, 92, 87) 0%,
+      rgba(39, 195, 184, 1) 0%,
+      rgb(12, 117, 110) 100%
+    );
+  }
+</style>
