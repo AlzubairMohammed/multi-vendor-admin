@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import VueSweetalert2 from "vue-sweetalert2";
+import VueBarcode from "@chenfengyuan/vue-barcode";
 import "./style/index.css";
 import "./style/style.css";
 import "flowbite";
@@ -18,4 +19,5 @@ createApp(App)
   .use(VueLoading)
   .use(router)
   .use(VueSweetalert2)
+  .component(VueBarcode.name, VueBarcode)
   .mount("#app");
