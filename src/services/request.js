@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import axios from "./axios.js";
 import responseAlert from "./sweet_alert.js";
 import { useLoading } from "vue-loading-overlay";
@@ -16,14 +17,11 @@ const request = {
         // JsLoadingOverlay.show(loading_options);
         axios.get(url, options).then((res) => {
           if (res.data.status) {
-            // JsLoadingOverlay.hide();
-            responseAlert("success", "success", "add complete successfully");
             loader.hide();
 
             resolve(res.data);
           } else {
             // JsLoadingOverlay.hide();
-            responseAlert("success", "خطاء", res.data.data.message);
             loader.hide();
 
             reject();
@@ -31,32 +29,53 @@ const request = {
         });
       } catch (error) {
         console.log("http request error");
+        responseAlert("error", "خطاء", "عفوا حدث خطاء ما ");
+
         loader.hide();
 
         reject();
       }
+      loader.hide();
     });
   },
   post: (url, payload, options) => {
-    return new Promise((resolve, reject) => {
-      const loader = $loading.show({
+    let loader;
+    if (!url.includes("search")) {
+      loader = $loading.show({
         // Optional parameters
       });
+    }
+    return new Promise((resolve, reject) => {
       try {
         axios.post(url, payload, options).then((res) => {
           if (res.data.status) {
-            loader.hide();
-            responseAlert("success", "نجاح", res.data.data.msg);
             resolve(res.data);
+            if (url.includes("search") || url.includes("paginate")) {
+              console.log("search request");
+            } else {
+              responseAlert("success", "نجاح", res.data.msg);
+              loader.hide();
+            }
           } else {
             loader.hide();
-            responseAlert("success", "خطاء", res.data.data.message);
+            responseAlert("error", "خطاء", res.data.data.msg);
             reject();
           }
         });
       } catch (error) {
         console.log("http request error");
         reject();
+        if (url.includes("search")) {
+          console.log("search request");
+        } else {
+          console.log("paginate error");
+          responseAlert("error", "خطاء", "عفوا حدث خطاء ما ");
+          loader.hide();
+        }
+      }
+      if (url.includes("search")) {
+        console.log("search request");
+      } else {
         loader.hide();
       }
     });
@@ -70,41 +89,53 @@ const request = {
         axios.put(`${url}/${id}`, payload, options).then((res) => {
           if (res.data.status) {
             loader.hide();
-            responseAlert("success", "نجاح", res.data.data.message);
+            responseAlert("success", "نجاح", "تم التعديل بنجاح");
             resolve(res.data);
           } else {
             loader.hide();
-            responseAlert("success", "خطاء", res.data.data.message);
+            responseAlert("warning", "تنبيه", res.data.msg);
             reject();
           }
         });
       } catch (error) {
         console.log("http request error");
         loader.hide();
+        responseAlert("error", "خطاء", "عفوا حدث خطاء ما ");
+
         reject();
       }
+      loader.hide();
     });
   },
   delete: (url, id, options) => {
     return new Promise((resolve, reject) => {
-      const loader = $loading.show({
-        // Optional parameters
-      });
       try {
-        axios.delete(`${url}/${id}`, options).then((res) => {
-          if (res.data.status) {
-            loader.hide();
-            responseAlert("success", "نجاح", res.data.data.message);
-            resolve(res.data);
-          } else {
-            loader.hide();
-            responseAlert("success", "خطاء", res.data.data.message);
-            reject();
+        Swal.fire({
+          title: "هل انت متأكد ؟",
+          text: "لن تستطيع استعادة العنصر بعد الحذف !",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "نعم , قم بالحذف",
+          cancelButtonText: "لا, الغاء الحذف!",
+          reverseButtons: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            axios.delete(`${url}/${id}`, options).then((res) => {
+              if (res.data.status) {
+                console.log("deleted data");
+                responseAlert("success", "نجاح", "تم الحذف بنجاح");
+
+                resolve(res.data);
+              } else {
+                responseAlert("error", "خطاء", "عفوا حدث خطاء ما ");
+                reject();
+              }
+            });
           }
         });
       } catch (error) {
         console.log("http request error");
-        loader.hide();
+        responseAlert("error", "خطاء", "عفوا حدث خطاء ما ");
 
         reject();
       }

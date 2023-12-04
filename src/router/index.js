@@ -10,7 +10,7 @@ import RolesPermessionsPage from "../views/RolesPermessionsPage.vue";
 const routes = [
   {
     path: "/",
-    redirect: "/home",
+    redirect: "/categories_page",
   },
   // {
   //   path: "/home",
