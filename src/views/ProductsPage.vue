@@ -37,13 +37,13 @@
               class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
             >
               <tr>
-                <th scope="col" class="px-6 py-3">الرقم</th>
-                <th scope="col" class="px-6 py-3">الاسم</th>
-                <th scope="col" class="px-6 py-3">القسم</th>
-                <th scope="col" class="px-6 py-3">سعر المزود</th>
-                <th scope="col" class="px-6 py-3">سعر العميل</th>
-                <th scope="col" class="px-6 py-3">الصورة</th>
-                <th scope="col" class="px-6 py-3"></th>
+                <th scope="col" class="px-6 py-3 text-center">الرقم</th>
+                <th scope="col" class="px-6 py-3 text-center">الاسم</th>
+                <th scope="col" class="px-6 py-3 text-center">القسم</th>
+                <th scope="col" class="px-6 py-3 text-center">سعر المندوب</th>
+                <th scope="col" class="px-6 py-3 text-center">سعر المستهلك</th>
+                <th scope="col" class="px-6 py-3 text-center">الصورة</th>
+                <th scope="col" class="px-6 py-3 text-center"></th>
               </tr>
             </thead>
             <tbody>
@@ -54,19 +54,23 @@
               >
                 <th
                   scope="row"
-                  class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
                   {{ (index += 1) }}
                 </th>
-                <td class="px-6 py-4">{{ app?.name }}</td>
-                <td class="px-6 py-4">{{ app?.categorycategory?.name }}</td>
-                <td class="px-6 py-4">{{ app?.price_agent }}</td>
-                <td class="px-6 py-4">{{ app?.price_customer }}</td>
+                <td class="px-6 py-4 text-center">{{ app?.name }}</td>
+                <td class="px-6 py-4 text-center">
+                  {{ app?.category?.name }}
+                </td>
+                <td class="px-6 py-4 text-center">{{ app?.price_agent }}</td>
+                <td class="px-6 py-4 text-center">{{ app?.price_customer }}</td>
                 <td class="px-6 py-4 text-center flex justify-center">
-                  <div class="flex justify-center">
+                  <div
+                    class="flex justify-center"
+                    style="width: 80px; height: 60px; overflow: hidden"
+                  >
                     <img
-                      width="80"
-                      height="60"
+                      style="width: 100%; height: auto"
                       :src="`http://localhost:5000/${
                         app?.image?.split('public/')[1]
                       }`"
@@ -78,7 +82,7 @@
                   <button
                     @click="setModalData(app)"
                     type="button"
-                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                    class="font-medium mx-4 text-blue-600 dark:text-blue-500 hover:underline"
                   >
                     تعديل
                   </button>
@@ -171,7 +175,7 @@
                 <label
                   for="first_name"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >سعر المزود</label
+                  >سعر المندوب</label
                 >
                 <input
                   type="number"
@@ -186,7 +190,7 @@
                 <label
                   for="first_name"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >سعر العميل</label
+                  >سعر المستهلك</label
                 >
                 <input
                   type="number"
@@ -303,7 +307,7 @@
                 <label
                   for="first_name"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >سعر المزود</label
+                  >سعر المندوب</label
                 >
                 <input
                   type="number"
@@ -319,7 +323,7 @@
                 <label
                   for="first_name"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >سعر العميل</label
+                  >سعر المستهلك</label
                 >
                 <input
                   type="number"

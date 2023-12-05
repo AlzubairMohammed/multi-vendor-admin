@@ -1,12 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import CategoriesPage from "../views/CategoriesPage.vue";
-import ProductsPage from "../views/ProductsPage.vue";
-import UsersPage from "../views/UsersPage.vue";
-import OrdersPage from "../views/OrdersPage.vue";
-import OrderDetailsPage from "../views/OrderDetailsPage.vue";
-import NewsPage from "../views/NewsPage.vue";
-import RolesPage from "../views/RolesPage.vue";
-import RolesPermessionsPage from "../views/RolesPermessionsPage.vue";
+
 const routes = [
   {
     path: "/",
@@ -14,7 +7,7 @@ const routes = [
   },
   {
     path: "/login",
-    component: import("../views/LoginPage.vue"),
+    component: () => import("../views/LoginPage.vue"),
   },
   // {
   //   path: "/home",
@@ -25,48 +18,65 @@ const routes = [
   {
     path: "/categories_page",
     name: "CategoriesPage",
-    component: CategoriesPage,
+    component: () => import("../views/CategoriesPage.vue"),
   },
   {
     path: "/products_page",
     name: "ProductsPage",
-    component: ProductsPage,
+    component: () => import("../views/ProductsPage.vue"),
   },
   {
     path: "/news_page",
     name: "NewsPage",
-    component: NewsPage,
+    component: () => import("../views/NewsPage.vue"),
   },
   {
     path: "/users_page",
     name: "UsersPage",
-    component: UsersPage,
+    component: () => import("../views/UsersPage.vue"),
   },
   {
     path: "/roles_page",
     name: "RolesPage",
-    component: RolesPage,
+    component: () => import("../views/RolesPage.vue"),
   },
   {
     path: "/roles_page/:id",
     name: "RolesPermessionsPage",
-    component: RolesPermessionsPage,
+    component: () => import("../views/RolesPermessionsPage.vue"),
   },
   {
     path: "/orders_page",
     name: "OrdersPage",
-    component: OrdersPage,
+    component: () => import("../views/OrdersPage.vue"),
   },
   {
     path: "/orders_page/:id",
     name: "OrderDetailsPage",
-    component: OrderDetailsPage,
+    component: () => import("../views/OrderDetailsPage.vue"),
   },
 ];
 
 const router = createRouter({
   history: createWebHashHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, _, next) => {
+  if (to?.path != "/login" && !localStorage["hala_token"]) next("/login");
+  else if (
+    to?.path == "/login" &&
+    localStorage["hala_token"] &&
+    localStorage["hala_user"]
+  ) {
+    if (
+      JSON.parse(localStorage["hala_user"])?.roles?.includes(
+        "warehouse_manager"
+      )
+    )
+      next("/orders_page");
+    else next("/categories_page");
+  } else next();
 });
 
 export default router;

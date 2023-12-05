@@ -36,10 +36,10 @@
               class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
             >
               <tr>
-                <th scope="col" class="px-6 py-3">الرقم</th>
-                <th scope="col" class="px-6 py-3">الاسم</th>
-                <th scope="col" class="px-6 py-3">الصورة</th>
-                <th scope="col" class="px-6 py-3"></th>
+                <th scope="col" class="px-6 py-3 text-center">الرقم</th>
+                <th scope="col" class="px-6 py-3 text-center">الاسم</th>
+                <th scope="col" class="px-6 py-3 text-center">الصورة</th>
+                <th scope="col" class="px-6 py-3 text-center"></th>
               </tr>
             </thead>
             <tbody>
@@ -50,16 +50,18 @@
               >
                 <th
                   scope="row"
-                  class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
                   {{ (index += 1) }}
                 </th>
-                <td class="px-6 py-4">{{ app?.name }}</td>
+                <td class="px-6 py-4 text-center">{{ app?.name }}</td>
                 <td class="px-6 py-4 text-center flex justify-center">
-                  <div class="flex justify-center">
+                  <div
+                    class="flex justify-center"
+                    style="width: 80px; height: 60px; overflow: hidden"
+                  >
                     <img
-                      width="80"
-                      height="60"
+                      style="width: 100%; height: auto"
                       :src="`http://localhost:5000/${
                         app?.image?.split('public/')[1]
                       }`"
@@ -71,7 +73,7 @@
                   <button
                     @click="setModalData(app)"
                     type="button"
-                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                    class="mx-4 font-medium text-blue-600 dark:text-blue-500 hover:underline"
                   >
                     تعديل
                   </button>

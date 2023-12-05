@@ -2,6 +2,7 @@ import axios from "axios";
 
 const state = {
   users: [],
+  currentUser: { name: "me" },
   session_url: "/api/v1/users",
   login_url: "/api/v1/auth/adminlogin",
   register_url: "/api/v1/users",
@@ -27,7 +28,7 @@ const actions = {
   },
   async register({ commit, state }, user) {
     try {
-      const response = await axios.post(state.register_url, user );
+      const response = await axios.post(state.register_url, user);
       if (response.data.success) {
         commit("registerUser", response.data);
         return true;
@@ -41,7 +42,7 @@ const actions = {
   },
   async logout({ commit, state }) {
     try {
-      const response = await axios.get(state.logout_url );
+      const response = await axios.get(state.logout_url);
       localStorage.removeItem("GDSC_token");
       commit("logoutUser", response.data);
     } catch (err) {
@@ -49,7 +50,7 @@ const actions = {
     }
   },
   async fetchUsers({ commit, state }) {
-    const response = await axios.get(state.session_url );
+    const response = await axios.get(state.session_url);
     console.log(response.data);
     commit("setUsers", response.data);
   },
@@ -101,6 +102,9 @@ const actions = {
 const mutations = {
   setUsers: (state, users) => {
     state.users = users;
+  },
+  setUser: (state, user) => {
+    state.currentUser = user;
   },
   newUser: (state, user) => {
     state.users.unshift(user);

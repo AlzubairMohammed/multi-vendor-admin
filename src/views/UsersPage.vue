@@ -36,12 +36,12 @@
               class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
             >
               <tr>
-                <th scope="col" class="px-6 py-3">الرقم</th>
-                <th scope="col" class="px-6 py-3">اسم المستخدم</th>
-                <th scope="col" class="px-6 py-3">الايميل</th>
-                <th scope="col" class="px-6 py-3">الصورة</th>
-                <th scope="col" class="px-6 py-3">ارقام الهاتف</th>
-                <th scope="col" class="px-6 py-3">الصلاحيات</th>
+                <th scope="col" class="px-6 py-3 text-right">الرقم</th>
+                <th scope="col" class="px-6 py-3 text-right">اسم المستخدم</th>
+                <th scope="col" class="px-6 py-3 text-right">الايميل</th>
+                <th scope="col" class="px-6 py-3 text-right">الصورة</th>
+                <th scope="col" class="px-6 py-3 text-right">ارقام الهاتف</th>
+                <th scope="col" class="px-6 py-3 text-right">الصلاحيات</th>
 
                 <th scope="col" class="px-6 py-3"></th>
               </tr>
@@ -50,48 +50,55 @@
               <tr
                 v-for="(app, index) in users"
                 :key="app.id"
-                class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+                class="odd:bg-white text-right odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
               >
                 <th
                   scope="row"
-                  class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  class="px-6 py-4 text-right font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
                   {{ (index += 1) }}
                 </th>
-                <td class="px-6 py-4">{{ app?.name }}</td>
-                <td class="px-6 py-4">{{ app?.email }}</td>
-                <td class="px-6 py-4 text-center flex justify-center">
-                  <div class="flex justify-center">
+                <td class="px-6 py-4 text-right">{{ app?.name }}</td>
+                <td class="px-6 py-4 text-right">{{ app?.email }}</td>
+                <td class="px-6 py-4 text-right">
+                  <div style="height: 80px; width: 80px; overflow: hidden">
                     <img
-                      width="80"
-                      height="60"
+                      style="width: 100%; height: auto"
                       :src="`http://localhost:5000/${
-                        app?.image?.split('public/')[1]
+                        app?.image?.split('public/')?.[1]
                       }`"
                       alt=""
                     />
                   </div>
                 </td>
-                <td class="px-6 py-4">
-                  <tr v-for="phone in app?.user_phones" :key="phone.id">
+                <td class="px-6 py-4 text-right">
+                  <tr
+                    class="text-right"
+                    v-for="phone in app?.user_phones"
+                    :key="phone.id"
+                  >
                     {{
                       phone?.phone
                     }}
                   </tr>
                 </td>
-                <td class="px-6 py-4">
-                  <tr v-for="role in app?.user_roles" :key="role.id">
+                <td class="px-6 py-4 text-right">
+                  <tr
+                    class="text-right"
+                    v-for="role in app?.user_roles"
+                    :key="role.id"
+                  >
                     {{
-                      role?.role?.role
+                      role?.role?.role_ar
                     }}
                   </tr>
                 </td>
 
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 text-right">
                   <button
                     @click="setModalData(app)"
                     type="button"
-                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                    class="font-medium mx-4 text-blue-600 dark:text-blue-500 hover:underline"
                   >
                     تعديل
                   </button>
@@ -141,15 +148,31 @@
             <div class="p-4 overflow-y-auto">
               <div class="input-group">
                 <label
-                  for="first_name"
+                  for="name"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >الاسم</label
+                  >الإسم الكامل</label
                 >
                 <input
                   type="text"
                   id="name"
                   v-model="data.name"
                   name="name"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div class="input-group">
+                <label
+                  for="username"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >إسم المستخدم</label
+                >
+                <input
+                  type="text"
+                  id="username"
+                  v-model="data.username"
+                  name="username"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
                 />
@@ -216,13 +239,13 @@
                   <div class="flex items-center">
                     <div class="input-group w-full mx-2">
                       <label
-                        for="first_name"
+                        :for="`edit_phone_${index}`"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                         >رقم الهاتف</label
                       >
                       <input
                         type="number"
-                        id="name"
+                        :id="`edit_phone_${index}`"
                         v-model="phone.phone"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         required
@@ -253,7 +276,7 @@
                   <div class="flex items-center">
                     <div class="input-group w-full mx-2">
                       <label
-                        for="first_name"
+                        for="permissions"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                         >الصلاحية</label
                       >
@@ -311,15 +334,31 @@
             <div class="p-4 overflow-y-auto">
               <div class="input-group">
                 <label
-                  for="first_name"
+                  for="edit_name"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >الاسم</label
+                  >الإسم الكامل</label
                 >
                 <input
                   type="text"
-                  id="name"
+                  id="edit_name"
                   name="name"
-                  v-model="data.name"
+                  v-model="editData.name"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div class="input-group">
+                <label
+                  for="username"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >إسم المستخدم</label
+                >
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  v-model="editData.username"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
                 />
@@ -335,13 +374,13 @@
                   type="email"
                   id="email"
                   name="email"
-                  v-model="data.email"
+                  v-model="editData.email"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
                 />
               </div>
 
-              <div class="input-group">
+              <!-- <div class="input-group">
                 <label
                   for="first_name"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -355,7 +394,7 @@
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
                 />
-              </div>
+              </div> -->
 
               <div class="input-group">
                 <label
@@ -368,31 +407,33 @@
                   name="image"
                   id="image"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required
                 />
               </div>
               <div class="roles my-2 bg-gray-100 p-4 rounded-xl">
                 <div class="flex justify-between items-center">
                   <h2>ارقام الهاتف</h2>
                   <button
-                    @click="data.user_phones.push({})"
+                    @click="editData.user_phones.push({})"
                     type="button"
                     class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:bg-white dark:text-gray-800"
                   >
                     <box-icon color="white" name="plus"></box-icon>
                   </button>
                 </div>
-                <div v-for="(phone, index) in data?.user_phones" :key="phone">
+                <div
+                  v-for="(phone, index) in editData?.user_phones"
+                  :key="phone"
+                >
                   <div class="flex items-center">
                     <div class="input-group w-full mx-2">
                       <label
-                        for="first_name"
+                        :for="`phone_${index}`"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                         >رقم الهاتف</label
                       >
                       <input
                         type="number"
-                        id="name"
+                        :id="`phone_${index}`"
                         name="target"
                         v-model="phone.phone"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -413,7 +454,7 @@
                 <div class="flex justify-between items-center">
                   <h2>الصلاحيات</h2>
                   <button
-                    @click="data.user_roles.push({})"
+                    @click="editData.user_roles.push({})"
                     type="button"
                     class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:bg-white dark:text-gray-800"
                   >
@@ -421,7 +462,7 @@
                   </button>
                 </div>
                 <div
-                  v-for="(user_role, index) in data?.user_roles"
+                  v-for="(user_role, index) in editData?.user_roles"
                   :key="user_role"
                 >
                   <div class="flex items-center">
@@ -500,9 +541,13 @@
           phones: [{}],
           roles: [{}],
         },
+        editData: {},
       };
     },
     methods: {
+      setEditData(data) {
+        this.editData = data;
+      },
       closeAddModal() {
         this.isShowAddModal = false;
       },
@@ -529,17 +574,27 @@
       async edit() {
         const form_data = new FormData(this.$refs.edit_form);
 
-        form_data.append("user_phones", JSON.stringify(this.data.user_phones));
-        form_data.append("user_roles", JSON.stringify(this.data.user_roles));
+        form_data.append(
+          "user_phones",
+          JSON.stringify(this.editData.user_phones)
+        );
+        form_data.append(
+          "user_roles",
+          JSON.stringify(this.editData.user_roles)
+        );
 
-        const response = await request.put(`users`, this.data.id, form_data);
+        const response = await request.put(
+          `users`,
+          this.editData.id,
+          form_data
+        );
         this.get();
         if (response.status) {
           this.closeEditModal();
         }
       },
       setModalData(app) {
-        this.data = Object.assign({}, app);
+        this.editData = Object.assign({}, app);
         this.isShowEditModal = true;
       },
       async delete_item(app) {

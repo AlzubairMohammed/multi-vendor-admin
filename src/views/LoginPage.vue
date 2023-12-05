@@ -1,6 +1,37 @@
 <script>
+  import { reactive } from "vue";
+  import request from "@/services/request";
+  import store from "@/store";
+  import { useRouter } from "vue-router";
+
   export default {
-    setup() {},
+    setup() {
+      const data = reactive({
+        username: "",
+        password: "",
+      });
+      const router = useRouter();
+      const loginUser = async () => {
+        const isLoggedIn = await request.post("users/login", {
+          username: data?.username,
+          password: data?.password,
+          login_type: "dashboard",
+        });
+        console.log({ isLoggedIn });
+        if (!isLoggedIn?.status) return;
+        localStorage["hala_token"] = isLoggedIn?.data?.token;
+        localStorage["hala_user"] = JSON.stringify(isLoggedIn?.data?.user);
+        store.commit("setUser", isLoggedIn?.data?.user);
+        console.log(store?.state?.users?.currentUser);
+        if (isLoggedIn?.data?.user?.roles?.includes("warehouse_manager"))
+          router.replace("/orders_page");
+        else router.push("/categories_page");
+      };
+      return {
+        data,
+        loginUser,
+      };
+    },
   };
 </script>
 
@@ -15,7 +46,7 @@
         <form id="login-form" @submit.prevent="loginUser">
           <p class="mb-4">
             <input
-              v-model="username"
+              v-model="data.username"
               type="text"
               id="username"
               name="username"
@@ -26,7 +57,7 @@
           </p>
           <p class="mb-4">
             <input
-              v-model="password"
+              v-model="data.password"
               type="password"
               id="password"
               name="password"

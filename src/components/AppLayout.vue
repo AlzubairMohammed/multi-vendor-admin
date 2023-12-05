@@ -161,20 +161,21 @@
             class="flex items-center p-2 text-white dark:text-white hover:text-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group"
           >
             <svg
-              class="flex-shrink-0 w-5 h-5 text-gray-100 dark:text-white hover:text-gray-900 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
-              aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 16"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="flex-shrink-0 w-5 h-5 text-gray-100 dark:text-white hover:text-gray-900 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white ml-2"
             >
               <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"
+                d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M3.087 9l.54 9.176A3 3 0 006.62 21h10.757a3 3 0 002.995-2.824L20.913 9H3.087zM12 10.5a.75.75 0 01.75.75v4.94l1.72-1.72a.75.75 0 111.06 1.06l-3 3a.75.75 0 01-1.06 0l-3-3a.75.75 0 111.06-1.06l1.72 1.72v-4.94a.75.75 0 01.75-.75z"
+                clip-rule="evenodd"
               />
             </svg>
+
             <span class="flex-1 ms-3 whitespace-nowrap">الطلبات </span>
             <span
               class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-100 bg-blue-800 rounded-full dark:bg-blue-900 dark:text-blue-300"
@@ -253,6 +254,7 @@
       },
       logout() {
         localStorage.removeItem("hala_token");
+        localStorage.removeItem("hala_user");
         this.$router.replace("/login");
       },
       // async checkCookie() {

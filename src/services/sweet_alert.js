@@ -7,7 +7,7 @@ const responseAlert = (icon, title, text) => {
     text: text,
     icon: icon,
     toast: true,
-    position: "top-end",
+    position: "top-start",
     showConfirmButton: false,
     timer: 3000,
   });
