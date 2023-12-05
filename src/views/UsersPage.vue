@@ -289,7 +289,7 @@
                           :key="role.id"
                           :value="role.id"
                         >
-                          {{ role?.role }}
+                          {{ role?.role_ar }}
                         </option>
                       </select>
                     </div>
@@ -481,7 +481,7 @@
                           :key="role.id"
                           :value="role.id"
                         >
-                          {{ role?.role }}
+                          {{ role?.role_ar }}
                         </option>
                       </select>
                     </div>
