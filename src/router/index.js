@@ -62,21 +62,21 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, _, next) => {
-  if (to?.path != "/login" && !localStorage["hala_token"]) next("/login");
-  else if (
-    to?.path == "/login" &&
-    localStorage["hala_token"] &&
-    localStorage["hala_user"]
-  ) {
-    if (
-      JSON.parse(localStorage["hala_user"])?.roles?.includes(
-        "warehouse_manager"
-      )
-    )
-      next("/orders_page");
-    else next("/categories_page");
-  } else next();
-});
+// router.beforeEach((to, _, next) => {
+//   if (to?.path != "/login" && !localStorage["hala_token"]) next("/login");
+//   else if (
+//     to?.path == "/login" &&
+//     localStorage["hala_token"] &&
+//     localStorage["hala_user"]
+//   ) {
+//     if (
+//       JSON.parse(localStorage["hala_user"])?.roles?.includes(
+//         "warehouse_manager"
+//       )
+//     )
+//       next("/orders_page");
+//     else next("/categories_page");
+//   } else next();
+// });
 
 export default router;
