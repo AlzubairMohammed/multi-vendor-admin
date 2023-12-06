@@ -38,6 +38,7 @@
               <th scope="col" class="px-6 py-3">الرقم</th>
               <th scope="col" class="px-6 py-3">العنوان</th>
               <th scope="col" class="px-6 py-3">المقتطف</th>
+              <th scope="col" class="px-6 py-3">الصورة</th>
               <th scope="col" class="px-6 py-3"></th>
             </tr>
           </thead>
@@ -55,7 +56,18 @@
               </th>
               <td class="px-6 py-4">{{ app?.title }}</td>
               <td class="px-6 py-4">{{ app?.content }}</td>
-
+              <td class="px-6 py-4 text-center flex justify-center">
+                <div class="flex justify-center">
+                  <img
+                    width="80"
+                    height="60"
+                    :src="`http://localhost:5000/${
+                      app?.image?.split('public/')[1]
+                    }`"
+                    alt=""
+                  />
+                </div>
+              </td>
               <td class="px-6 py-4">
                 <button
                   @click="setModalData(app)"
@@ -129,6 +141,20 @@
                 name="content"
               ></textarea>
             </div>
+
+            <div class="input-group">
+              <label
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                for="file_input"
+                >الصورة</label
+              >
+              <input
+                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                id="image"
+                name="image"
+                type="file"
+              />
+            </div>
           </div>
           <div
             class="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-gray-700"
@@ -184,6 +210,20 @@
                 :value="data.content"
                 name="content"
               ></textarea>
+            </div>
+
+            <div class="input-group">
+              <label
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                for="file_input"
+                >الصورة</label
+              >
+              <input
+                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                id="image"
+                name="image"
+                type="file"
+              />
             </div>
           </div>
           <div
