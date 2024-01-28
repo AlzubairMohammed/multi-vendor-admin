@@ -1,477 +1,651 @@
+<script setup>
+import AppLayout from "@/components/AppLayout.vue";
+import { FwbModal } from "flowbite-vue";
+import AppNavbar from "../components/AppNavbar.vue";
+import { onMounted, ref, inject } from "vue";
+import { useStore } from "vuex";
+const checkCookie = inject("checkCookie");
+const store = useStore();
+
+let data = ref({
+  product_data: {
+    name: "",
+    descr: "",
+    product_type: "",
+    buy_price: 0,
+    sale_price: 0,
+    sub_category_id: 0,
+  },
+  images_data: [
+    {
+      image: "",
+    },
+  ],
+  variation_data: [
+    {
+      name: "",
+      attribute_id: 0,
+      buy_price: 0,
+      sale_price: 0,
+    },
+  ],
+});
+let products = ref([]);
+let categories = ref([]);
+let attributes = ref([]);
+let page = 1;
+let tot = 1;
+let search_term = "";
+let isShowAddModal = ref(false);
+let isShowEditModal = ref(false);
+
+const closeAddModal = () => {
+  isShowAddModal.value = false;
+};
+const showAddModal = () => {
+  isShowAddModal.value = true;
+};
+const closeEditModal = () => {
+  isShowEditModal.value = false;
+};
+// const showEditModal = () => {
+//   isShowEditModal = true;
+// };
+const handleFileChange = (event) => {
+  data.value.images_data = event.target.files;
+};
+const add = async () => {
+  await store.dispatch("addProduct", data.value);
+};
+onMounted(async () => {
+  try {
+    await store.dispatch("fetchProducts");
+    products.value = store.getters.getProducts;
+  } catch (error) {
+    console.error("Error dispatching fetchProducts:", error);
+  }
+  try {
+    await store.dispatch("fetchCategories");
+    categories.value = store.getters.allCategories;
+    console.log(categories.value);
+  } catch (error) {
+    console.error("Error dispatching fetchProducts:", error);
+  }
+  try {
+    await store.dispatch("fetchAttributes");
+    attributes.value = store.getters.allAttributes;
+    console.log(attributes.value);
+  } catch (error) {
+    console.error("Error dispatching fetchProducts:", error);
+  }
+  checkCookie();
+});
+</script>
+
 <template>
-  <div class="w-full py-8 px-24">
-    <page-header title="المنتجات" />
-    <div class="flex justify-between items-center py-4">
-      <div class="relative">
-        <input
-          type="email"
-          class="peer py-3 px-6 ps-11 block w-full bg-gray-100 border-transparent rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-700 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
-          placeholder="بحث"
-          v-model="search_term"
-          @input="search()"
-        />
-        <div
-          class="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-4 peer-disabled:opacity-50 peer-disabled:pointer-events-none"
+  <app-layout>
+    <app-navbar :title="'المنتجات'"></app-navbar>
+    <div class="w-full py-8 px-4">
+      <!-- <page-header title="المنتجات" /> -->
+      <div class="flex justify-between items-center py-4">
+        <div class="relative">
+          <input
+            type="email"
+            class="peer py-3 pl-6 pr-10 ps-11 block w-full bg-gray-100 border-transparent rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-700 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
+            placeholder="بحث"
+            v-model="search_term"
+            @input="search()"
+          />
+          <div
+            class="absolute right-2 inset-y-0 start-0 flex items-center pointer-events-none ps-4 peer-disabled:opacity-50 peer-disabled:pointer-events-none"
+          >
+            <box-icon color="grey" name="search"></box-icon>
+          </div>
+        </div>
+
+        <button
+          @click="showAddModal()"
+          type="button"
+          class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:bg-white dark:text-gray-800"
         >
-          <box-icon color="grey" name="search"></box-icon>
+          <box-icon color="white" name="plus"></box-icon>
+        </button>
+      </div>
+
+      <div class="table w-full">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <table
+            class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+          >
+            <thead
+              class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+            >
+              <tr>
+                <th scope="col" class="px-6 py-3 text-center">الرقم</th>
+                <th scope="col" class="px-6 py-3 text-center">الاسم</th>
+                <th scope="col" class="px-6 py-3 text-center">القسم</th>
+                <th scope="col" class="px-6 py-3 text-center">سعر المندوب</th>
+                <th scope="col" class="px-6 py-3 text-center">سعر المستهلك</th>
+                <th scope="col" class="px-6 py-3 text-center">الصورة</th>
+                <th scope="col" class="px-6 py-3 text-center"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(app, index) in products"
+                :key="app.id"
+                class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+              >
+                <th
+                  scope="row"
+                  class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                >
+                  {{ (index += 1) }}
+                </th>
+                <td class="px-6 py-4 text-center">{{ app?.name }}</td>
+                <td class="px-6 py-4 text-center">
+                  {{ app?.category?.name }}
+                </td>
+                <td class="px-6 py-4 text-center">{{ app?.price_agent }}</td>
+                <td class="px-6 py-4 text-center">{{ app?.price_customer }}</td>
+                <td class="px-6 py-4 text-center flex justify-center">
+                  <div
+                    class="flex justify-center"
+                    style="width: 80px; height: 60px; overflow: hidden"
+                  >
+                    <img
+                      style="width: 100%; height: auto"
+                      :src="`http://localhost:8000/${
+                        app?.image?.split('public/')[1]
+                      }`"
+                      alt=""
+                    />
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <button
+                    @click="setModalData(app)"
+                    type="button"
+                    class="font-medium mx-4 text-blue-600 dark:text-blue-500 hover:underline"
+                  >
+                    تعديل
+                  </button>
+                  <button
+                    @click="delete_item(app)"
+                    type="button"
+                    class="font-medium text-red-600 mx-2 dark:text-red-500 hover:underline"
+                  >
+                    حذف
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <nav class="flex justify-center my-4" v-if="tot > 1">
+            <ul class="inline-flex -space-x-px text-base h-10">
+              <li
+                v-for="page_number in tot"
+                @click="handlePagination(page_number)"
+                :key="page_number"
+              >
+                <a
+                  :class="{
+                    'bg-blue-600 text-white hover:text-gray-100 hover:bg-blue-900 ':
+                      page_number == page,
+                  }"
+                  class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  >{{ page_number }}</a
+                >
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
 
-      <button
-        @click="showAddModal()"
-        type="button"
-        class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:bg-white dark:text-gray-800"
-      >
-        <box-icon color="white" name="plus"></box-icon>
-      </button>
-    </div>
-
-    <div class="table w-full">
-      <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table
-          class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-        >
-          <thead
-            class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+      <fwb-modal v-if="isShowAddModal" @close="closeAddModal">
+        <template #header>
+          <div class="flex items-center text-lg">اضافة</div>
+        </template>
+        <template #body>
+          <form
+            enctype="multipart/form-data"
+            @submit.prevent="add()"
+            ref="add_form"
           >
-            <tr>
-              <th scope="col" class="px-6 py-3">الرقم</th>
-              <th scope="col" class="px-6 py-3">الاسم</th>
-              <th scope="col" class="px-6 py-3">القسم</th>
-              <th scope="col" class="px-6 py-3">سعر المزود</th>
-              <th scope="col" class="px-6 py-3">سعر العميل</th>
-              <th scope="col" class="px-6 py-3">الصورة</th>
-              <th scope="col" class="px-6 py-3"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(app, index) in products"
-              :key="app.id"
-              class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
-            >
-              <th
-                scope="row"
-                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                {{ (index += 1) }}
-              </th>
-              <td class="px-6 py-4">{{ app?.name }}</td>
-              <td class="px-6 py-4">{{ app?.categorycategory?.name }}</td>
-              <td class="px-6 py-4">{{ app?.price_agent }}</td>
-              <td class="px-6 py-4">{{ app?.price_customer }}</td>
-              <td class="px-6 py-4 text-center flex justify-center">
-                <div class="flex justify-center">
-                  <img
-                    width="80"
-                    height="60"
-                    :src="`http://localhost:5000/${
-                      app?.image?.split('public/')[1]
-                    }`"
-                    alt=""
-                  />
+            <div class="p-4 overflow-y-auto">
+              <div class="input-group">
+                <label
+                  for="username"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >إسم المنتج</label
+                >
+                <input
+                  type="text"
+                  id="name"
+                  @model="data.product_data.name"
+                  name="name"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                />
+              </div>
+              <div class="input-group">
+                <label
+                  for="username"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >سعر الشراء</label
+                >
+                <input
+                  type="number"
+                  id="buy_price"
+                  @model="data.product_data.buy_price"
+                  name="buy_price"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                />
+              </div>
+              <div class="input-group">
+                <label
+                  for="sale_price"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >سعر البيع</label
+                >
+                <input
+                  type="number"
+                  id="sale_price"
+                  @model="data.product_data.sale_price"
+                  name="sale_price"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                />
+              </div>
+              <div class="input-group">
+                <label
+                  for="countries"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >القسم</label
+                >
+                <select
+                  name="sub_category_id"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  @model="data.product_data.sub_category_id"
+                >
+                  <option
+                    v-for="category in categories"
+                    :key="category.id"
+                    :value="category.id"
+                  >
+                    {{ category.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label
+                  for="countries"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >نوع المنتج</label
+                >
+                <select
+                  name="category_id"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  @model="data.product_data.product_type"
+                >
+                  <option>مفرد</option>
+                  <option>متغير</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label
+                  for="first_name"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >الوصف</label
+                >
+                <textarea
+                  id="descr"
+                  @model="data.product_data.descr"
+                  name="descr"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                ></textarea>
+              </div>
+
+              <div class="input-group">
+                <label
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  for="file_input"
+                  >الصورة</label
+                >
+                <input
+                  class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                  id="image"
+                  name="image"
+                  type="file"
+                  multiple
+                  @change="handleFileChange"
+                />
+              </div>
+              <div class="roles my-2 bg-gray-100 p-4 rounded-xl">
+                <div class="flex justify-between items-center">
+                  <h2>تغييرات المنتج</h2>
+                  <button
+                    @click="data.variation_data.push({})"
+                    type="button"
+                    class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:bg-white dark:text-gray-800"
+                  >
+                    <box-icon color="white" name="plus"></box-icon>
+                  </button>
                 </div>
-              </td>
-              <td class="px-6 py-4">
-                <button
-                  @click="setModalData(app)"
-                  type="button"
-                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                <div
+                  v-for="(variation, index) in data.variation_data"
+                  :key="variation"
                 >
-                  تعديل
-                </button>
-                <button
-                  @click="delete_item(app)"
-                  type="button"
-                  class="font-medium text-red-600 mx-2 dark:text-red-500 hover:underline"
-                >
-                  حذف
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                  <div class="flex items-center">
+                    <div class="input-group w-full mx-2">
+                      <label
+                        :for="`edit_phone_${index}`"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >الاسم</label
+                      >
+                      <input
+                        type="text"
+                        :id="`edit_phone_${index}`"
+                        v-model="variation.name"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        required
+                      />
+                    </div>
+                    <div class="input-group w-full mx-2">
+                      <label
+                        :for="`edit_phone_${index}`"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >سعر الشراء</label
+                      >
+                      <input
+                        type="number"
+                        :id="`edit_phone_${index}`"
+                        v-model="variation.buy_price"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        required
+                      />
+                    </div>
+                    <div class="input-group w-full mx-2">
+                      <label
+                        :for="`edit_phone_${index}`"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >سعر البيع</label
+                      >
+                      <input
+                        type="number"
+                        :id="`edit_phone_${index}`"
+                        v-model="variation.sale_price"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        required
+                      />
+                    </div>
+                    <div class="input-group w-full mx-2">
+                      <label
+                        for="countries"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >القسم</label
+                      >
+                      <select
+                        name="category_id"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        @model="data.product_data.sub_category_id"
+                      >
+                        <option
+                          v-for="category in attributes"
+                          :key="category.id"
+                          :value="category.id"
+                        >
+                          {{ category.name }}
+                        </option>
+                      </select>
+                    </div>
 
-        <nav class="flex justify-center my-4" v-if="tot > 1">
-          <ul class="inline-flex -space-x-px text-base h-10">
-            <li
-              v-for="page_number in tot"
-              @click="handlePagination(page_number)"
-              :key="page_number"
+                    <button
+                      @click="data.variation_data.splice(index, 1)"
+                      type="button"
+                      class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-900 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:bg-white dark:text-gray-800"
+                    >
+                      <box-icon color="white" name="trash"></box-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-gray-700"
             >
-              <a
-                :class="{
-                  'bg-blue-600 text-white hover:text-gray-100 hover:bg-blue-900 ':
-                    page_number == page,
-                }"
-                class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                >{{ page_number }}</a
+              <button
+                type="button"
+                class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                @click="closeAddModal()"
               >
-            </li>
-          </ul>
-        </nav>
-      </div>
+                الغاء
+              </button>
+              <button
+                type="submit"
+                class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              >
+                اضافة
+              </button>
+            </div>
+          </form>
+        </template>
+      </fwb-modal>
+
+      <fwb-modal v-if="isShowEditModal" @close="closeEditModal">
+        <template #header>
+          <div class="flex items-center text-lg">تعديل</div>
+        </template>
+        <template #body>
+          <form @submit.prevent="edit()" ref="edit_form">
+            <div class="p-4 overflow-y-auto">
+              <div class="input-group">
+                <label
+                  for="edit_name"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >الإسم الكامل</label
+                >
+                <input
+                  type="text"
+                  id="edit_name"
+                  name="name"
+                  v-model="editData.name"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div class="input-group">
+                <label
+                  for="username"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >إسم المستخدم</label
+                >
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  v-model="editData.username"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                />
+              </div>
+              <div class="input-group">
+                <label
+                  for="countries"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >القسم</label
+                >
+                <select
+                  name="category_id"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                >
+                  <option
+                    v-for="category in categories"
+                    :key="category.id"
+                    :value="data.category_id"
+                  >
+                    {{ category.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label
+                  for="first_name"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >الايميل</label
+                >
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  v-model="editData.email"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <!-- <div class="input-group">
+                <label
+                  for="first_name"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >كلمية السر</label
+                >
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  v-model="data.password"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                />
+              </div> -->
+
+              <div class="input-group">
+                <label
+                  for="first_name"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >الصورة</label
+                >
+                <input
+                  type="file"
+                  name="image"
+                  id="image"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                />
+              </div>
+              <div class="roles my-2 bg-gray-100 p-4 rounded-xl">
+                <div class="flex justify-between items-center">
+                  <h2>ارقام الهاتف</h2>
+                  <button
+                    @click="editData.user_phones.push({})"
+                    type="button"
+                    class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:bg-white dark:text-gray-800"
+                  >
+                    <box-icon color="white" name="plus"></box-icon>
+                  </button>
+                </div>
+                <div
+                  v-for="(phone, index) in editData?.user_phones"
+                  :key="phone"
+                >
+                  <div class="flex items-center">
+                    <div class="input-group w-full mx-2">
+                      <label
+                        :for="`phone_${index}`"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >رقم الهاتف</label
+                      >
+                      <input
+                        type="number"
+                        :id="`phone_${index}`"
+                        name="target"
+                        v-model="phone.phone"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        required
+                      />
+                    </div>
+                    <button
+                      @click="remove_item(index, 'phone', 'edit')"
+                      type="button"
+                      class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-900 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:bg-white dark:text-gray-800"
+                    >
+                      <box-icon color="white" name="delete"></box-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="roles my-2 bg-gray-00 p-4 rounded-xl">
+                <div class="flex justify-between items-center">
+                  <h2>الصلاحيات</h2>
+                  <button
+                    @click="editData.user_roles.push({})"
+                    type="button"
+                    class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:bg-white dark:text-gray-800"
+                  >
+                    <box-icon color="white" name="plus"></box-icon>
+                  </button>
+                </div>
+                <div
+                  v-for="(user_role, index) in editData?.user_roles"
+                  :key="user_role"
+                >
+                  <div class="flex items-center">
+                    <div class="input-group w-full mx-2">
+                      <label
+                        for="first_name"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >الصلاحية</label
+                      >
+                      <select
+                        v-model="user_role.role_id"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      >
+                        <option
+                          v-for="role in roles"
+                          :key="role.id"
+                          :value="role.id"
+                        >
+                          {{ role?.role_ar }}
+                        </option>
+                      </select>
+                    </div>
+                    <button
+                      @click="remove_item(index, 'role', 'edit')"
+                      type="button"
+                      class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-900 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:bg-white dark:text-gray-800"
+                    >
+                      <box-icon color="white" name="delete"></box-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-gray-700"
+            >
+              <button
+                type="button"
+                class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                @click="closeEditModal()"
+              >
+                الغاء
+              </button>
+              <button
+                type="submit"
+                class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              >
+                تعديل
+              </button>
+            </div>
+          </form>
+        </template>
+      </fwb-modal>
     </div>
-
-    <fwb-modal v-if="isShowAddModal" @close="closeAddModal">
-      <template #header>
-        <div class="flex items-center text-lg">اضافة</div>
-      </template>
-      <template #body>
-        <form @submit.prevent="add()" ref="add_form">
-          <div class="p-4 overflow-y-auto">
-            <div class="input-group">
-              <label
-                for="first_name"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >الاسم</label
-              >
-              <input
-                type="text"
-                id="name"
-                name="name"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required
-              />
-            </div>
-            <div class="input-group">
-              <label
-                for="countries"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >القسم</label
-              >
-              <select
-                name="category_id"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              >
-                <option
-                  v-for="category in categories"
-                  :key="category.id"
-                  :value="category.id"
-                >
-                  {{ category.name }}
-                </option>
-              </select>
-            </div>
-            <div class="input-group">
-              <label
-                for="first_name"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >الوصف</label
-              >
-              <textarea
-                name="description"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                id=""
-              ></textarea>
-            </div>
-            <div class="input-group">
-              <label
-                for="first_name"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >سعر المزود</label
-              >
-              <input
-                type="number"
-                id="name"
-                name="price_agent"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <div class="input-group">
-              <label
-                for="first_name"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >سعر العميل</label
-              >
-              <input
-                type="number"
-                id="name"
-                name="price_customer"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <div class="input-group">
-              <label
-                for="first_name"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >الباركود</label
-              >
-              <input
-                type="text"
-                id="name"
-                name="barcode"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required
-              />
-            </div>
-            <div class="input-group">
-              <label
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                for="file_input"
-                >الصورة</label
-              >
-              <input
-                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                id="image"
-                name="image"
-                type="file"
-              />
-            </div>
-          </div>
-          <div
-            class="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-gray-700"
-          >
-            <button
-              type="button"
-              class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-              @click="closeAddModal()"
-            >
-              الغاء
-            </button>
-            <button
-              type="submit"
-              class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-            >
-              اضافة
-            </button>
-          </div>
-        </form>
-      </template>
-    </fwb-modal>
-    <fwb-modal v-if="isShowEditModal" @close="closeEditModal">
-      <template #header>
-        <div class="flex items-center text-lg">تعديل</div>
-      </template>
-      <template #body>
-        <form @submit.prevent="edit()" ref="edit_form">
-          <div class="p-4 overflow-y-auto">
-            <div class="input-group">
-              <label
-                for="first_name"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >الاسم</label
-              >
-              <input
-                type="text"
-                id="name"
-                name="name"
-                :value="data.name"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required
-              />
-            </div>
-            <div class="input-group">
-              <label
-                for="countries"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >القسم</label
-              >
-              <select
-                name="category_id"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              >
-                <option
-                  v-for="category in categories"
-                  :key="category.id"
-                  :value="data.category_id"
-                >
-                  {{ category.name }}
-                </option>
-              </select>
-            </div>
-            <div class="input-group">
-              <label
-                for="first_name"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >الوصف</label
-              >
-              <textarea
-                name="description"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                id=""
-                :value="data.description"
-              ></textarea>
-            </div>
-            <div class="input-group">
-              <label
-                for="first_name"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >سعر المزود</label
-              >
-              <input
-                type="number"
-                id="name"
-                name="price_agent"
-                :value="data.price_agent"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <div class="input-group">
-              <label
-                for="first_name"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >سعر العميل</label
-              >
-              <input
-                type="number"
-                id="name"
-                name="price_customer"
-                :value="data.price_customer"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <div class="input-group">
-              <label
-                for="first_name"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >الباركود</label
-              >
-              <input
-                type="text"
-                id="name"
-                name="barcode"
-                :value="data.barcode"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required
-              />
-            </div>
-            <div class="input-group">
-              <label
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                for="file_input"
-                >الصورة</label
-              >
-              <input
-                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                id="image"
-                name="image"
-                type="file"
-              />
-            </div>
-          </div>
-          <div
-            class="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-gray-700"
-          >
-            <button
-              type="button"
-              class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-              @click="closeAddModal()"
-            >
-              الغاء
-            </button>
-            <button
-              type="submit"
-              class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-            >
-              اضافة
-            </button>
-          </div>
-        </form>
-      </template>
-    </fwb-modal>
-  </div>
+  </app-layout>
 </template>
-
-<script>
-import PageHeader from "@/components/PageHeader.vue";
-import request from "../services/request";
-import { FwbModal } from "flowbite-vue";
-export default {
-  components: { PageHeader, FwbModal },
-  data() {
-    return {
-      data: {},
-      products: [],
-      categories: [],
-      limit: 10,
-      page: 1,
-      tot: 1,
-      search_term: "",
-      isShowAddModal: false,
-      isShowEditModal: false,
-    };
-  },
-  methods: {
-    closeAddModal() {
-      this.isShowAddModal = false;
-    },
-    showAddModal() {
-      this.isShowAddModal = true;
-    },
-    closeEditModal() {
-      this.isShowEditModal = false;
-    },
-    showEditModal() {
-      this.isShowEditModal = true;
-    },
-    async add() {
-      const form_data = new FormData(this.$refs.add_form);
-      const response = await request.post("products", form_data);
-      this.get();
-      if (response.status) {
-        this.closeAddModal();
-      }
-    },
-    async edit() {
-      const form_data = new FormData(this.$refs.edit_form);
-      const response = await request.put(`products`, this.data.id, form_data);
-      this.get();
-      if (response.status) {
-        this.closeEditModal();
-      }
-    },
-    setModalData(app) {
-      this.data = Object.assign({}, app);
-      this.isShowEditModal = true;
-    },
-    async delete_item(app) {
-      const response = await request.delete(`products`, app.id);
-      this.get();
-      console.log(response);
-    },
-    async get() {
-      const response = await request.post("products/paginate", {
-        limit: this.limit,
-        page: this.page,
-      });
-      this.tot = Math.ceil(response.tot / this.limit);
-      this.products = response.data;
-      console.log(response);
-    },
-    async getCategories() {
-      const response = await request.get("categories");
-      this.categories = response.data;
-      console.log(response);
-    },
-    async search() {
-      const response = await request.post("products/search", {
-        limit: 10,
-        page: 1,
-        search: this.search_term,
-        col: "name",
-      });
-      this.products = response.data;
-      console.log(response);
-    },
-    handlePagination(page) {
-      this.page = page;
-      this.get();
-    },
-  },
-  created() {
-    this.get();
-    this.getCategories();
-  },
-};
-</script>
 
 <style></style>

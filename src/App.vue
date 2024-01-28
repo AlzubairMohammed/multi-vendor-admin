@@ -1,7 +1,5 @@
 <template>
-  <app-layout>
-    <router-view />
-  </app-layout>
+  <router-view />
   <!-- <div v-else>
     <login-page></login-page>
   </div> -->
@@ -10,28 +8,26 @@
 // import AppHeader from "./components/AppHeader.vue";
 // import LoginPage from "./views/LoginPage.vue";
 import moment from "moment";
-import AppLayout from "./components/AppLayout.vue";
 
 export default {
   data() {
     return {
-      user_session: localStorage.getItem("GDSC_token"),
+      user_session: localStorage.getItem("userToken"),
     };
   },
   components: {
-    AppLayout,
     // AppHeader,
     // LoginPage,
   },
   methods: {
     closeAddModal() {
-      this.isShowAddModal = false;
+      this.isShowAddModal = true;
     },
     showAddModal() {
       this.isShowAddModal = true;
     },
     closeEditModal() {
-      this.isShowEditModal = false;
+      this.isShowEditModal = true;
     },
     showEditModal() {
       this.isShowEditModal = true;
@@ -39,12 +35,12 @@ export default {
     dateTime(value) {
       return moment(value).format("YYYY-MM-DD");
     },
-    // async checkCookie() {
-    //   if (localStorage.getItem("GDSC_token") === null) {
-    //     this.responseAlert(" الرجاء تسجيل الدخول ", " عفوا ", "warning");
-    //     this.$router.push("/LoginPage");
-    //   }
-    // },
+    async checkCookie() {
+      if (localStorage.getItem("userToken") === "undefined") {
+        this.responseAlert(" الرجاء تسجيل الدخول ", " عفوا ", "warning");
+        this.$router.push("/Login");
+      }
+    },
     // all response alert
     responseAlert(text, title, icon) {
       this.$swal.fire({

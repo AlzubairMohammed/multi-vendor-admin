@@ -16,14 +16,12 @@ const request = {
       try {
         // JsLoadingOverlay.show(loading_options);
         axios.get(url, options).then((res) => {
-          if (res.data.status) {
+          if (res?.data?.status) {
             loader.hide();
-
-            resolve(res.data);
+            resolve(res?.data);
           } else {
             // JsLoadingOverlay.hide();
             loader.hide();
-
             reject();
           }
         });
@@ -49,28 +47,28 @@ const request = {
       try {
         axios.post(url, payload, options).then((res) => {
           if (res.data.status) {
-            resolve(res.data);
-            if (url.includes("search") || url.includes("paginate")) {
+            resolve(res?.data);
+            if (url?.includes("search") || url?.includes("paginate")) {
               console.log("search request");
             } else {
-              responseAlert("success", "نجاح", res.data.msg);
+              responseAlert("success", "نجاح", res?.data?.msg);
               loader.hide();
             }
           } else {
             loader.hide();
-            responseAlert("error", "خطاء", res.data.data.msg);
+            responseAlert("error", "خطاء", res?.data?.msg);
             reject();
           }
         });
       } catch (error) {
         console.log("http request error");
+        loader.hide();
         reject();
         if (url.includes("search")) {
           console.log("search request");
         } else {
           console.log("paginate error");
           responseAlert("error", "خطاء", "عفوا حدث خطاء ما ");
-          loader.hide();
         }
       }
       if (url.includes("search")) {
@@ -93,7 +91,7 @@ const request = {
             resolve(res.data);
           } else {
             loader.hide();
-            responseAlert("warning", "تنبيه", res.data.msg);
+            responseAlert("warning", "تنبيه", res?.data?.msg);
             reject();
           }
         });
@@ -119,13 +117,13 @@ const request = {
           cancelButtonText: "لا, الغاء الحذف!",
           reverseButtons: true,
         }).then((result) => {
-          if (result.isConfirmed) {
+          if (result?.isConfirmed) {
             axios.delete(`${url}/${id}`, options).then((res) => {
-              if (res.data.status) {
+              if (res?.data?.status) {
                 console.log("deleted data");
                 responseAlert("success", "نجاح", "تم الحذف بنجاح");
 
-                resolve(res.data);
+                resolve(res?.data);
               } else {
                 responseAlert("error", "خطاء", "عفوا حدث خطاء ما ");
                 reject();
