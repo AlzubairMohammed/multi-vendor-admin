@@ -4,7 +4,7 @@ const state = {
   users: [],
   currentUser: { name: "me" },
   session_url: "/api/users",
-  login_url: "http://localhost:5000/api/users/login",
+  login_url: "http://89.116.236.251:8000/api/users/login",
   register_url: "/api/v1/users",
   logout_url: "/api/v1/auth/logout",
   token: null,

@@ -92,7 +92,6 @@ onMounted(async () => {
               <tr>
                 <th scope="col" class="px-6 py-3 text-center">الرقم</th>
                 <th scope="col" class="px-6 py-3 text-center">الاسم</th>
-                <th scope="col" class="px-6 py-3 text-center">الصورة</th>
                 <th scope="col" class="px-6 py-3 text-center"></th>
               </tr>
             </thead>
@@ -109,18 +108,6 @@ onMounted(async () => {
                   {{ (index += 1) }}
                 </th>
                 <td class="px-6 py-4 text-center">{{ app?.name }}</td>
-                <td class="px-6 py-4 text-center flex justify-center">
-                  <div
-                    class="flex justify-center"
-                    style="width: 80px; height: 60px; overflow: hidden"
-                  >
-                    <img
-                      style="width: 100%; height: auto"
-                      :src="`http://localhost:5000/${app?.image}`"
-                      alt=""
-                    />
-                  </div>
-                </td>
                 <td class="px-6 py-4">
                   <button
                     @click="showEditModal(app)"
@@ -184,19 +171,6 @@ onMounted(async () => {
                   required
                 />
               </div>
-              <div class="input-group">
-                <label
-                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  for="file_input"
-                  >الصورة</label
-                >
-                <input
-                  class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                  id="image"
-                  name="image"
-                  type="file"
-                />
-              </div>
             </div>
             <div
               class="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-gray-700"
@@ -240,19 +214,6 @@ onMounted(async () => {
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   :value="editingItem.name"
                   required
-                />
-              </div>
-              <div class="input-group">
-                <label
-                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  for="file_input"
-                  >الصورة</label
-                >
-                <input
-                  class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                  id="file_input"
-                  type="file"
-                  name="image"
                 />
               </div>
             </div>

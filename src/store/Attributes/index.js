@@ -1,7 +1,7 @@
 import request from "@/services/request";
 const state = {
   attributes: [],
-  session_url: "product-attributes",
+  session_url: "attributes",
   addError: [],
   config: {
     headers: {
