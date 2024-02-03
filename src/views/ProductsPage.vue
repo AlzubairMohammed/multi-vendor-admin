@@ -23,10 +23,15 @@ let data = ref({
   ],
   variation_data: [
     {
-      name: "",
-      attribute_id: 0,
       buy_price: 0,
       sale_price: 0,
+      variation_attributes: [
+        {
+          attribute_id: 0,
+          name: "",
+          image: "",
+        },
+      ],
     },
   ],
 });
@@ -48,14 +53,17 @@ const showAddModal = () => {
 const closeEditModal = () => {
   isShowEditModal.value = false;
 };
-// const showEditModal = () => {
-//   isShowEditModal = true;
-// };
+const showEditModal = () => {
+  isShowEditModal = true;
+};
 const handleFileChange = (event) => {
   data.value.images_data = event.target.files;
 };
 const add = async () => {
   await store.dispatch("addProduct", data.value);
+};
+const delet = async (id) => {
+  await store.dispatch("deleteProduct", id);
 };
 onMounted(async () => {
   try {
@@ -66,10 +74,10 @@ onMounted(async () => {
   }
   try {
     await store.dispatch("fetchCategories");
-    categories.value = store.getters.allCategories;
+    categories.value = store.getters.getCategories;
     console.log(categories.value);
   } catch (error) {
-    console.error("Error dispatching fetchProducts:", error);
+    console.error("Error dispatching fetchCategories:", error);
   }
   try {
     await store.dispatch("fetchAttributes");
@@ -124,8 +132,8 @@ onMounted(async () => {
                 <th scope="col" class="px-6 py-3 text-center">الرقم</th>
                 <th scope="col" class="px-6 py-3 text-center">الاسم</th>
                 <th scope="col" class="px-6 py-3 text-center">القسم</th>
-                <th scope="col" class="px-6 py-3 text-center">سعر المندوب</th>
-                <th scope="col" class="px-6 py-3 text-center">سعر المستهلك</th>
+                <th scope="col" class="px-6 py-3 text-center">سعر المخزن</th>
+                <th scope="col" class="px-6 py-3 text-center">سعر البيع</th>
                 <th scope="col" class="px-6 py-3 text-center">الصورة</th>
                 <th scope="col" class="px-6 py-3 text-center"></th>
               </tr>
@@ -144,10 +152,10 @@ onMounted(async () => {
                 </th>
                 <td class="px-6 py-4 text-center">{{ app?.name }}</td>
                 <td class="px-6 py-4 text-center">
-                  {{ app?.category?.name }}
+                  {{ app?.sub_category?.name }}
                 </td>
-                <td class="px-6 py-4 text-center">{{ app?.price_agent }}</td>
-                <td class="px-6 py-4 text-center">{{ app?.price_customer }}</td>
+                <td class="px-6 py-4 text-center">{{ app?.buy_price }}</td>
+                <td class="px-6 py-4 text-center">{{ app?.sale_price }}</td>
                 <td class="px-6 py-4 text-center flex justify-center">
                   <div
                     class="flex justify-center"
@@ -155,7 +163,7 @@ onMounted(async () => {
                   >
                     <img
                       style="width: 100%; height: auto"
-                      :src="`http://localhost:8000/${
+                      :src="`http://89.116.236.251:8000/${
                         app?.image?.split('public/')[1]
                       }`"
                       alt=""
@@ -164,14 +172,21 @@ onMounted(async () => {
                 </td>
                 <td class="px-6 py-4">
                   <button
-                    @click="setModalData(app)"
+                    @click="showEditModal(app)"
+                    type="button"
+                    class="font-medium mx-4 text-green-600 dark:text-blue-500 hover:underline"
+                  >
+                    عرض
+                  </button>
+                  <button
+                    @click="showEditModal(app)"
                     type="button"
                     class="font-medium mx-4 text-blue-600 dark:text-blue-500 hover:underline"
                   >
                     تعديل
                   </button>
                   <button
-                    @click="delete_item(app)"
+                    @click="delet(app)"
                     type="button"
                     class="font-medium text-red-600 mx-2 dark:text-red-500 hover:underline"
                   >
@@ -394,7 +409,7 @@ onMounted(async () => {
                         @model="data.product_data.sub_category_id"
                       >
                         <option
-                          v-for="category in attributes"
+                          v-for="category in categories"
                           :key="category.id"
                           :value="category.id"
                         >

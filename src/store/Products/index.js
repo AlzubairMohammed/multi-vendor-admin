@@ -1,7 +1,7 @@
-import axios from "axios";
 import request from "@/services/request";
 const state = {
   Products: [],
+  Categories: [],
   session_url: "products",
   addError: [],
   config: {
@@ -15,10 +15,17 @@ const getters = {
   getProducts: (state) => {
     return state.Products;
   },
+  getCategories: (state) => {
+    return state.Categories;
+  },
 };
 
 const actions = {
   async fetchProducts({ commit, state }) {
+    const response = await request.get(state.session_url);
+    commit("setCategories", response.data);
+  },
+  async fetchCategories({ commit, state }) {
     const response = await request.get(state.session_url);
     commit("setProducts", response.data);
   },
@@ -61,7 +68,7 @@ const actions = {
   },
   async deleteProduct({ commit, state }, id) {
     try {
-      const response = await axios.delete(`${state.session_url}/${id}`);
+      const response = await request.delete(state.session_url, id);
       if (response.data.success) {
         commit("removeProduct", id);
         return true;
@@ -77,6 +84,9 @@ const actions = {
 const mutations = {
   setProducts: (state, Products) => {
     state.Products = Products;
+  },
+  setCategories: (state, Categories) => {
+    state.Categories = Categories;
   },
   newProduct: (state, Product) => {
     state.Products.unshift(Product);
