@@ -3,6 +3,8 @@ const state = {
   Products: [],
   Categories: [],
   session_url: "products",
+  get_products_url: "products/by-vendor-id/paginate",
+  get_categories_url: "sub-categories",
   addError: [],
   config: {
     headers: {
@@ -21,18 +23,21 @@ const getters = {
 };
 
 const actions = {
-  async fetchProducts({ commit, state }) {
-    const response = await request.get(state.session_url);
-    commit("setCategories", response.data);
+  async fetchProducts({ commit, state }, data) {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    data.vendor_id = userData.id;
+    data.city_id = 1;
+    const response = await request.post(state.get_products_url, data);
+    commit("setProducts", response.data);
   },
   async fetchCategories({ commit, state }) {
-    const response = await request.get(state.session_url);
-    commit("setProducts", response.data);
+    const response = await request.get(state.get_categories_url);
+    commit("setCategories", response.data);
   },
   async addProduct({ commit, state }, Product) {
     // console.log(Product);
-    const userData = localStorage.getItem("userData");
-    Product.product_data.vendor_id = userData.id;
+    // const userData = JSON.parse(localStorage.getItem("userData"));
+    // Product.append("city_id", userData.id);
     try {
       const response = await request.post(
         state.session_url,
