@@ -24,6 +24,7 @@ const actions = {
     if (!isLoggedIn?.status) return;
     localStorage["userToken"] = isLoggedIn?.data?.token;
     localStorage["userData"] = JSON.stringify(isLoggedIn?.data?.user);
+    localStorage["storeData"] = JSON.stringify(isLoggedIn?.data?.store_details);
     commit("loginUser", payload);
   },
   async logout({ commit, state }) {
