@@ -10,7 +10,7 @@ let data = ref({
   product_data: {},
   images_data: [
     {
-      image: "",
+      // image: "",
     },
   ],
   variation_data: [],
@@ -23,10 +23,11 @@ let dataTemplate = ref({
     buy_price: 0,
     sale_price: 0,
     sub_category_id: 0,
+    vendor_id: 4,
   },
   images_data: [
     {
-      image: "",
+      // image: "",
     },
   ],
   variation_data: [
@@ -48,7 +49,8 @@ let add_form = ref({});
 
 const add = async () => {
   // const data = new FormData(add_form.value);
-  console.log(data.value);
+  // console.log(data.value);
+
   await store.dispatch("addProduct", data.value);
 };
 const closeAddModal = () => {
@@ -69,24 +71,32 @@ onMounted(async () => {
   }
 });
 const handleBaseProductImageChange = (event) => {
-  // console.log(event.target.files);
-  const filesArray = [...event.target.files];
-  filesArray.forEach((element) => {
-    data.value.images_data.push({ image: element });
-  });
+  const reader = new FileReader();
+  const file = event.target.files[0];
+  reader.onload = () => {
+    data.value.images_data[0].image = reader.result;
+  };
+  reader.readAsDataURL(file);
+  // console.log(data.value.images_data);
 };
 const handleVariationProductImageChange = (index, attributeIndex, event) => {
-  console.log(event, index, attributeIndex);
-  const filesArray = [...event.target.files];
-  filesArray.forEach((element) => {
-    const variation_attributes = [];
-    // const variation_attributes= [attributeIndex].push({
-    //   image: element,
-    // })
-    variation_attributes.splice(attributeIndex, 0, { image: element });
-    data.value.variation_data.splice(index, 0, { variation_attributes });
-  });
-  console.log(data.value);
+  // const base64Image = String.fromCharCode.apply(null, event.target.files);
+  const reader = new FileReader();
+  const file = event.target.files[0];
+  reader.onload = () => {
+    data.value.variation_data[index].variation_attributes[
+      attributeIndex
+    ].image = reader.result;
+  };
+  reader.readAsDataURL(file);
+  console.log(
+    data.value.variation_data[index].variation_attributes[attributeIndex].image
+  );
+  // filesArray.forEach((element) => {
+  //   const variation_attributes = [];
+  //   variation_attributes.splice(attributeIndex, 0, { image: element });
+  //   data.value.variation_data.splice(index, 0, { variation_attributes });
+  // });
 };
 </script>
 
@@ -173,7 +183,7 @@ const handleVariationProductImageChange = (index, attributeIndex, event) => {
               v-model="data.product_data.product_type"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             >
-              <option value="normal">مفرد</option>
+              <option value="basic">مفرد</option>
               <option value="any">متغير</option>
             </select>
           </div>
@@ -306,7 +316,7 @@ const handleVariationProductImageChange = (index, attributeIndex, event) => {
                       >القيمة</label
                     >
                     <input
-                      type="number"
+                      type="text"
                       :id="`add_value_${attributeIndex}`"
                       v-model="
                         data.variation_data[index].variation_attributes[

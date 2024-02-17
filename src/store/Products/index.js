@@ -8,7 +8,9 @@ const state = {
   addError: [],
   config: {
     headers: {
-      "Content-Type": "multipart/form-data",
+      "Content-Type": "application/json",
+      // "Content-Type": "multipart/form-data",
+      // "Content-Type": "application/xml",
     },
   },
 };
@@ -26,7 +28,7 @@ const actions = {
   async fetchProducts({ commit, state }, data) {
     const userData = JSON.parse(localStorage.getItem("userData"));
     data.vendor_id = userData.id;
-    data.city_id = 1;
+    data.city_id = 2;
     const response = await request.post(state.get_products_url, data);
     commit("setProducts", response.data);
   },
@@ -35,9 +37,9 @@ const actions = {
     commit("setCategories", response.data);
   },
   async addProduct({ commit, state }, Product) {
-    // console.log(Product);
-    // const userData = JSON.parse(localStorage.getItem("userData"));
-    // Product.append("city_id", userData.id);
+    Product.product_data.vendor_id = +JSON.parse(
+      localStorage.getItem("userData")
+    ).id;
     try {
       const response = await request.post(
         state.session_url,

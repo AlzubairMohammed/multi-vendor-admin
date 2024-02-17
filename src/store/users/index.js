@@ -1,12 +1,12 @@
-import axios from "axios";
+import request from "@/services/request";
 
 const state = {
   users: [],
   currentUser: { name: "me" },
-  session_url: "/api/users",
-  login_url: "http://89.116.236.251:8000/api/users/login",
-  register_url: "/api/v1/users",
-  logout_url: "/api/v1/auth/logout",
+  session_url: "/users",
+  login_url: "/users/login",
+  register_url: "/users",
+  logout_url: "/auth/logout",
   token: null,
 };
 
@@ -18,17 +18,17 @@ const getters = {
 
 const actions = {
   async login({ commit, state }, payload) {
-    const isLoggedIn = await axios.post(state.login_url, payload);
+    const isLoggedIn = await request.post(state.login_url, payload);
     console.log(payload);
     console.log({ isLoggedIn });
     if (!isLoggedIn?.status) return;
-    localStorage["userToken"] = isLoggedIn?.data?.data?.token;
-    localStorage["userData"] = JSON.stringify(isLoggedIn?.data?.data?.user);
+    localStorage["userToken"] = isLoggedIn?.data?.token;
+    localStorage["userData"] = JSON.stringify(isLoggedIn?.data?.user);
     commit("loginUser", payload);
   },
   async logout({ commit, state }) {
     try {
-      const response = await axios.get(state.logout_url);
+      const response = await request.get(state.logout_url);
       localStorage.removeItem("user_token");
       commit("logoutUser", response.data);
     } catch (err) {
