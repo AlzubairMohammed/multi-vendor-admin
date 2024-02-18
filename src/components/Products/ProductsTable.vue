@@ -54,9 +54,7 @@ const deletProduct = () => {
               >
                 <img
                   style="width: 100%; height: auto"
-                  :src="`http://89.116.236.251:8000/${
-                    app?.image?.split('public/')[1]
-                  }`"
+                  :src="`http://localhost:5000/api/static/${app?.product_images[0].image}`"
                   alt=""
                 />
               </div>
