@@ -18,15 +18,26 @@ const getters = {
 
 const actions = {
   async fetchAttributes({ commit, state }) {
-    const response = await request.get(state.session_url);
+    let payload = {};
+    payload.vendor_id = +JSON.parse(localStorage.getItem("userData")).id;
+    payload.page = 1;
+    payload.limit = 100;
+    const response = await request.post(
+      state.session_url + "/by-vendor-id/paginate",
+      payload
+    );
     commit("setAttributes", response.data);
   },
-  async addAttribute({ commit, state }, Attribute) {
-    // console.log(Attribute);
+  async addAttribute({ commit, state }, attribute) {
+    attribute.append(
+      "vendor_id",
+      +JSON.parse(localStorage.getItem("userData")).id
+    );
+    console.log(attribute);
     try {
       const response = await request.post(
         state.session_url,
-        Attribute,
+        attribute,
         state.config
       );
       if (response.data.success) {
