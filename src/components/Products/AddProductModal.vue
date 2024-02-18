@@ -8,49 +8,14 @@ const store = useStore();
 
 let data = ref({
   product_data: {},
-  images_data: [
-    {
-      // image: "",
-    },
-  ],
+  images_data: [{}],
   variation_data: [],
-});
-let dataTemplate = ref({
-  product_data: {
-    name: "",
-    descr: "",
-    product_type: "",
-    buy_price: 0,
-    sale_price: 0,
-    sub_category_id: 0,
-    vendor_id: 4,
-  },
-  images_data: [
-    {
-      // image: "",
-    },
-  ],
-  variation_data: [
-    {
-      buy_price: 0,
-      sale_price: 0,
-      variation_attributes: [],
-    },
-  ],
-});
-let attribueTemplate = ref({
-  attribute_id: 0,
-  name: "",
-  image: "",
 });
 let attributes = ref([]);
 let categories = ref([]);
 let add_form = ref({});
 
 const add = async () => {
-  // const data = new FormData(add_form.value);
-  // console.log(data.value);
-
   await store.dispatch("addProduct", data.value);
 };
 const closeAddModal = () => {
@@ -77,10 +42,8 @@ const handleBaseProductImageChange = (event) => {
     data.value.images_data[0].image = reader.result;
   };
   reader.readAsDataURL(file);
-  // console.log(data.value.images_data);
 };
 const handleVariationProductImageChange = (index, attributeIndex, event) => {
-  // const base64Image = String.fromCharCode.apply(null, event.target.files);
   const reader = new FileReader();
   const file = event.target.files[0];
   reader.onload = () => {
@@ -92,11 +55,6 @@ const handleVariationProductImageChange = (index, attributeIndex, event) => {
   console.log(
     data.value.variation_data[index].variation_attributes[attributeIndex].image
   );
-  // filesArray.forEach((element) => {
-  //   const variation_attributes = [];
-  //   variation_attributes.splice(attributeIndex, 0, { image: element });
-  //   data.value.variation_data.splice(index, 0, { variation_attributes });
-  // });
 };
 </script>
 
@@ -221,7 +179,11 @@ const handleVariationProductImageChange = (index, attributeIndex, event) => {
               <h2>تغييرات المنتج</h2>
               <button
                 @click="
-                  data.variation_data.push(dataTemplate.variation_data[0])
+                  data.variation_data.push({
+                    buy_price,
+                    sale_price,
+                    variation_attributes: [],
+                  })
                 "
                 type="button"
                 class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:bg-white dark:text-gray-800"
@@ -268,7 +230,11 @@ const handleVariationProductImageChange = (index, attributeIndex, event) => {
                   <h2>اضافة خاصية</h2>
                   <button
                     @click="
-                      variation.variation_attributes.push(attribueTemplate)
+                      data.variation_data[index].variation_attributes.push({
+                        attribute_id,
+                        name,
+                        image,
+                      })
                     "
                     type="button"
                     class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:bg-white dark:text-gray-800"
@@ -279,9 +245,8 @@ const handleVariationProductImageChange = (index, attributeIndex, event) => {
                 <!-- attribue titel -->
                 <!-- attribute rendering -->
                 <div
-                  v-for="(
-                    item, attributeIndex
-                  ) in variation.variation_attributes"
+                  v-for="(item, attributeIndex) in data.variation_data[index]
+                    .variation_attributes"
                   :key="item"
                   class="bg-blue-100 p-4 rounded-xl my-4"
                 >
